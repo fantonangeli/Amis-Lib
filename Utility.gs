@@ -1,4 +1,28 @@
-UtilityClass=function(that){
+/**
+ * copy all sheets from a Spreadsheet to another. !!IMPORTANT!! has to be completed
+ * @param  {string} sourceId the source id
+ */
+this.copyAllSheetsHere = function(sourceId) {
+  var dest, destSheets, source, sourceSheets, _i, _j, _len, _len1, _sheet;
+  source = SpreadsheetApp.openById('YYYYYY');
+  dest = SpreadsheetApp.getActiveSpreadsheet();
+  sourceSheets = source.getSheets();
+  destSheets = source.getSheets();
+
+  //copyt new sheets
+  for (_i = 0, _len = sourceSheets.length; _i < _len; _i++) {
+    _sheet = sourceSheets[_i];
+    _sheet.copyTo(dest);
+    //TODO set the correct name of the sheet
+    //TODO hide the sheet if is a template (in the AmisMarketApp) 
+  }
+  
+  //delete old sheets
+  for (_j = 0, _len1 = destSheets.length; _j < _len1; _j++) {
+    _sheet = destSheets[_j];
+    dest.deleteSheet(_sheet);
+  }
+};UtilityClass=function(that){
 
    /**
     * converts column number to column letter
@@ -262,6 +286,32 @@ UtilityClass=function(that){
 
           return sheetValues[cellIndexes.row][cellIndexes.col];
     };
+  
+  /**
+   * copy all sheets from a Spreadsheet to another. !!IMPORTANT!! has to be completed
+   * @param  {string} sourceId the source id
+   */
+  this.copyAllSheetsHere = function( sourceId ) {
+  	var dest, destSheets, source, sourceSheets, _i, _j, _len, _len1, _sheet;
+  	source = SpreadsheetApp.openById( 'YYYYYY' );
+  	dest = SpreadsheetApp.getActiveSpreadsheet();
+  	sourceSheets = source.getSheets();
+  	destSheets = source.getSheets();
+
+  	//copyt new sheets
+  	for ( _i = 0, _len = sourceSheets.length; _i < _len; _i++ ) {
+  		_sheet = sourceSheets[ _i ];
+  		_sheet.copyTo( dest );
+  		//TODO set the correct name of the sheet
+  		//TODO hide the sheet if is a template (in the AmisMarketApp) 
+  	}
+
+  	//delete old sheets
+  	for ( _j = 0, _len1 = destSheets.length; _j < _len1; _j++ ) {
+  		_sheet = destSheets[ _j ];
+  		dest.deleteSheet( _sheet );
+  	}
+  };
   
 
 };
