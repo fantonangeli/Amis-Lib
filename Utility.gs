@@ -344,6 +344,17 @@ this.copyAllSheetsHere = function(sourceId) {
       );
   };
   
+  
+  /**
+   * Make a string's first character uppercase
+   * @param  {string} str
+   * @return {string}
+   */
+  this.ucfirst = function( str ) {
+  	return str.charAt( 0 ).toUpperCase() + str.slice( 1 );
+  };
+
+  
 
 };
 
