@@ -312,6 +312,37 @@ this.copyAllSheetsHere = function(sourceId) {
   		dest.deleteSheet( _sheet );
   	}
   };
+
+
+  /**
+   * Interpolace string with keys with the object
+   * with key values passed
+   *
+   * @param   {string} text                        string to be interpolated
+   * @param   {object} keyValue                    object with key values to subtitute on the string
+   * @param   {Regexp} [delimiter=/{{([^{}]*)}}/g] regexp that defines the delimiter, default is {{word}}
+   *
+   * @returns {string} The interpolated string
+   *
+   * @example
+   *
+   * var interpolated = interpolate('Hello {{name}}, it is me {{daemon}}.', {
+   * 	name: 'Lyra',
+   *   daemon: 'pantalaimon'
+   * });
+   *
+   * console.log(interpolated === 'Hello Lyra, it is me pantalaimon.')
+   */
+  this.interpolate=function(text, keyValues, delimiter) {
+      delimiter = delimiter || /{{([^{}]*)}}/g;
+      return text.replace(
+      		delimiter,
+          function (matched, key) {
+              var value = keyValues[key];
+              return typeof value === 'string' || typeof value === 'number' ? value : matched;
+          }
+      );
+  };
   
 
 };
