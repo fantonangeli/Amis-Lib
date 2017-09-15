@@ -132,4 +132,4 @@ var FirebaseConnector=function(dbName){
     	return JSON.parse(ft.toString());
     };
 
-};
+}; 
