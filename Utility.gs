@@ -14,9 +14,9 @@ this.copyAllSheetsHere = function(sourceId) {
     _sheet = sourceSheets[_i];
     _sheet.copyTo(dest);
     //TODO set the correct name of the sheet
-    //TODO hide the sheet if is a template (in the AmisMarketApp) 
+    //TODO hide the sheet if is a template (in the AmisMarketApp)
   }
-  
+
   //delete old sheets
   for (_j = 0, _len1 = destSheets.length; _j < _len1; _j++) {
     _sheet = destSheets[_j];
@@ -181,6 +181,37 @@ this.copyAllSheetsHere = function(sourceId) {
       };
 
 
+      /**
+       * check if a given cell is in any of a set of ranges
+       * @param  {[string]} ranges  array of the range  eg: [F14:G34, B:D]
+       * @param  {range|string} cell  the cell to check or A1Notation for better performance
+       * @return {bool}       true if the cell is in any range, false otherwise
+       */
+      this.isInAnyRange = function( ranges, cell ) {
+      	var cellA1, r;
+
+      	if ( !ranges || !cell ) {
+      		return false;
+      	}
+
+      	if ( typeof cell !== "string" ) {
+      		cellA1 = cell.getA1Notation();
+      	} else {
+      		cellA1 = cell;
+      	}
+
+      	for ( var i = ranges.length; i--; ) {
+      		r = ranges[ i ];
+
+      		if ( this.isInRange( r, cellA1 ) ) {
+      			return true;
+      		}
+      	}
+
+      	return false;
+      };
+
+
 
     /**
      * get the acitve cell value (useful for sidebar and dialog)
@@ -286,7 +317,7 @@ this.copyAllSheetsHere = function(sourceId) {
 
           return sheetValues[cellIndexes.row][cellIndexes.col];
     };
-  
+
   /**
    * copy all sheets from a Spreadsheet to another. !!IMPORTANT!! has to be completed
    * @param  {string} sourceId the source id
@@ -303,7 +334,7 @@ this.copyAllSheetsHere = function(sourceId) {
   		_sheet = sourceSheets[ _i ];
   		_sheet.copyTo( dest );
   		//TODO set the correct name of the sheet
-  		//TODO hide the sheet if is a template (in the AmisMarketApp) 
+  		//TODO hide the sheet if is a template (in the AmisMarketApp)
   	}
 
   	//delete old sheets
@@ -343,8 +374,8 @@ this.copyAllSheetsHere = function(sourceId) {
           }
       );
   };
-  
-  
+
+
   /**
    * Make a string's first character uppercase
    * @param  {string} str
@@ -354,7 +385,7 @@ this.copyAllSheetsHere = function(sourceId) {
   	return str.charAt( 0 ).toUpperCase() + str.slice( 1 );
   };
 
-  
+
 
 };
 
