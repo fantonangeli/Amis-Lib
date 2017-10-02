@@ -250,16 +250,29 @@ UtilityClass=function(that){
    * @param  {string} message debug info to send
    * @todo has to be fixed: Config object not available
    */
-  this.sendErrorEmails=function(message) {
-    // var ss = SpreadsheetApp.getActiveSpreadsheet();
-    // var sheet=ss.getActiveSheet();
-    // var title="Error message in spreadsheet "+ss.getName();
-    // message="Error in sheet:"+sheet.getName()+"\n\n"+
-    //     "getActiveCell().getA1Notation():"+sheet.getActiveCell().getA1Notation()+"\n\n"+
-    //     "Session.getActiveUser().getEmail():"+Session.getActiveUser().getEmail()+"\n\n"+
-    //     "message:"+message+"\n\n";
-    // MailApp.sendEmail(Config.errorEmail, title, message);
-    };
+   this.sendErrorEmails = function( message ) {
+       	var ss = SpreadsheetApp.getActiveSpreadsheet();
+       	var sheet = ss.getActiveSheet();
+       	var activeRange = sheet.getActiveRange();
+
+       	try {
+       		throw new Error();
+       	} catch ( ex ) {
+       		var title = "Error message in spreadsheet: " + ss.getName();
+       		body = "Error spreadsheet: <a href='" + ss.getUrl() + "'>" + ss.getName() + "</a><br>" +
+       			"Sheet:" + sheet.getName() + "<br>" +
+       			"Error message: " + message + "<br>" +
+       			"Current range: " + activeRange.getA1Notation() + "<br>" +
+       			"Current user:" + Session.getActiveUser().getEmail() + "<br>" +
+       			"Stacktrace: " + ex.stack;
+
+       		MailApp.sendEmail( {
+       			to: Config.errorEmail,
+       			subject: title,
+       			htmlBody: body
+       		});
+       	}
+   };
 
 
     /**
