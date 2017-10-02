@@ -1,4 +1,4 @@
-UtilityClass=function(that){
+UtilityClass=function(){
 
    /**
     * converts column number to column letter
