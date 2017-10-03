@@ -267,7 +267,6 @@ UtilityClass=function(){
        			"<b>Sheet</b>:" + sheet.getName() + "<br>" +
        			"<b>Error message</b>: " + message + "<br>" +
        			"<b>Current range</b>: " + activeRange.getA1Notation() + "<br>" +
-       			"<b>Current user</b>:" + Session.getActiveUser().getEmail() + "<br>" +
        			"<b>Stacktrace</b>: " + ex.stack;
 
        		MailApp.sendEmail( {
