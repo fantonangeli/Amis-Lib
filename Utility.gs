@@ -248,26 +248,30 @@ UtilityClass=function(){
   /**
    * sends a debug email message
    * @param  {string} message debug info to send
-   * @todo has to be fixed: Config object not available
+   * @param  {string} errorEmail email to send the error
    */
-   this.sendErrorEmails = function( message ) {
+   this.sendErrorEmails = function( message, errorEmail ) {
        	var ss = SpreadsheetApp.getActiveSpreadsheet();
        	var sheet = ss.getActiveSheet();
        	var activeRange = sheet.getActiveRange();
+
+        if (!errorEmail) {
+            return;
+        }
 
        	try {
        		throw new Error();
        	} catch ( ex ) {
        		var title = "Error message in spreadsheet: " + ss.getName();
-       		body = "Error spreadsheet: <a href='" + ss.getUrl() + "'>" + ss.getName() + "</a><br>" +
-       			"Sheet:" + sheet.getName() + "<br>" +
-       			"Error message: " + message + "<br>" +
-       			"Current range: " + activeRange.getA1Notation() + "<br>" +
-       			"Current user:" + Session.getActiveUser().getEmail() + "<br>" +
-       			"Stacktrace: " + ex.stack;
+       		body = "<b>Spreadsheet</b>: <a href='" + ss.getUrl() + "'>" + ss.getName() + "</a><br>" +
+       			"<b>Sheet</b>:" + sheet.getName() + "<br>" +
+       			"<b>Error message</b>: " + message + "<br>" +
+       			"<b>Current range</b>: " + activeRange.getA1Notation() + "<br>" +
+       			"<b>Current user</b>:" + Session.getActiveUser().getEmail() + "<br>" +
+       			"<b>Stacktrace</b>: " + ex.stack;
 
        		MailApp.sendEmail( {
-       			to: Config.errorEmail,
+       			to: errorEmail,
        			subject: title,
        			htmlBody: body
        		});

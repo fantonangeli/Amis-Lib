@@ -1,5 +1,17 @@
-var FirebaseConnector=function(dbName){
+/**
+ * class to connect firebase and manage dataSheetNode
+ * @param  {string} dbName     dbName on firebase
+ * @param  {string} errorEmail (optional) email to send the error, if not set no email will be sent
+ * @return {object}
+ */
+var FirebaseConnector=function(dbName, errorEmail){
 
+
+    /**
+     * email address for errors informations
+     * @type {String}
+     */
+    this.errorEmail=errorEmail,
 
     /**
      * setter for the firebase token
@@ -59,9 +71,10 @@ var FirebaseConnector=function(dbName){
             "saveNode: "+saveNode+"\n\n"+
             "data:"+data+"\n\n"+
             "getAllHeaders(): "+JSON.stringify(response.getAllHeaders())+"\n\n"+
-            "getContentText(): "+response.getContentText()+"\n\n"
+            "getContentText(): "+response.getContentText()+"\n\n",
+            this.errorEmail
         );
-        onError(responseCode, JSON.parse(response.toString()).error);        
+        onError(responseCode, JSON.parse(response.toString()).error);
     }
 
     return responseCode;
@@ -91,7 +104,8 @@ var FirebaseConnector=function(dbName){
   			"ft.getResponseCode(): " + ft.getResponseCode() + "\n\n" +
   			"node: " + node + "\n\n" +
   			"getAllHeaders(): " + JSON.stringify( ft.getAllHeaders() ) + "\n\n" +
-  			"getContentText(): " + ft.getContentText() + "\n\n"
+  			"getContentText(): " + ft.getContentText() + "\n\n",
+            this.errorEmail
   		);
         onError(responseCode, JSON.parse(ft.toString()).error);
         return null;
@@ -123,7 +137,8 @@ var FirebaseConnector=function(dbName){
     			"ft.getResponseCode(): " + ft.getResponseCode() + "\n\n" +
     			"node: " + node + "\n\n" +
     			"getAllHeaders(): " + JSON.stringify( ft.getAllHeaders() ) + "\n\n" +
-    			"getContentText(): " + ft.getContentText() + "\n\n"
+    			"getContentText(): " + ft.getContentText() + "\n\n",
+                this.errorEmail
     		);
           onError(responseCode, JSON.parse(ft.toString()).error);
           return null;
@@ -132,4 +147,4 @@ var FirebaseConnector=function(dbName){
     	return JSON.parse(ft.toString());
     };
 
-}; 
+};
