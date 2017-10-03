@@ -310,31 +310,85 @@ UtilityClass=function(){
           return sheetValues[cellIndexes.row][cellIndexes.col];
     };
 
+    /**
+     * Executes a provided function once for each sheet of a spreadsheet.
+     * @param  {string} sourceId (optional) the source id, if not defined will be taken the current spreadsheet
+     * @param  {RegExp} regexSheetName regular expression to copy only mathcing sheets name. eg /^Template_.+/
+     * @param  {Function} callback       Function to execute for each element, taking 2 arguments: sheet, sheetName
+     * @throws  {SheetNotFound} if no sheet is found
+     */
+    this.forEachSheet=function(sourceId, regexSheetName, callback){
+        var source, sourceSheets, _sheetName, _i, _j, _len, _sheet;
+
+        regexSheetName=(regexSheetName || /.*/);
+
+        if (!callback) {
+            return false;
+        }
+
+        try{
+          source = (sourceId)?SpreadsheetApp.openById( sourceId ):SpreadsheetApp.getActiveSpreadsheet();
+        }catch(e){
+          throw "SheetNotFound";
+        }
+
+      	sourceSheets = source.getSheets();
+
+      	for ( _i = 0, _len = sourceSheets.length; _i < _len; _i++ ) {
+      		_sheet = sourceSheets[ _i ];
+            _sheetName = _sheet.getName();
+
+            if(regexSheetName.test(_sheetName)){
+                callback(_sheet, _sheetName);
+            }
+
+      	}
+    };
+
+    /**
+     * delete all mathcing sheet
+     * @return {void}
+     * @param  {RegExp} regexSheetName regular expression to copy only mathcing sheets name. eg /^Template_.+/
+     * @throws {InvalidArgument}
+     */
+    this.deleteMatchingSheets=function(regexSheetName){
+        var spreadsheet;
+
+        if (!regexSheetName) {
+            throw "InvalidArgument";
+        }
+
+        spreadsheet=SpreadsheetApp.getActiveSpreadsheet();
+
+        this.forEachSheet(null, regexSheetName, function(sheet, sheetName){
+            spreadsheet.deleteSheet(sheet);
+        });
+    };
+
   /**
    * copy all sheets from a Spreadsheet to another. !!IMPORTANT!! has to be completed
    * @param  {string} sourceId the source id
+   * @param  {RegExp} regexSheetName regular expression to copy only mathcing sheets name. eg /^Template_.+/
+   * @return {void}
+   * @throws {InvalidArgument}
    */
-  this.copyAllSheetsHere = function( sourceId ) {
-  	var dest, destSheets, source, sourceSheets, _i, _j, _len, _len1, _sheet;
-  	source = SpreadsheetApp.openById( 'YYYYYY' );
+  this.copyAllSheetsHere = function( sourceId, regexSheetName ) {
+  	var dest, destSheets;
+    regexSheetName=(regexSheetName || /.*/);
   	dest = SpreadsheetApp.getActiveSpreadsheet();
-  	sourceSheets = source.getSheets();
-  	destSheets = source.getSheets();
+  	destSheets = dest.getSheets();
 
-  	//copyt new sheets
-  	for ( _i = 0, _len = sourceSheets.length; _i < _len; _i++ ) {
-  		_sheet = sourceSheets[ _i ];
-  		_sheet.copyTo( dest );
-  		//TODO set the correct name of the sheet
-  		//TODO hide the sheet if is a template (in the AmisMarketApp)
-  	}
+    if (!sourceId) {
+        throw "InvalidArgument";
+    }
 
-  	//delete old sheets
-  	for ( _j = 0, _len1 = destSheets.length; _j < _len1; _j++ ) {
-  		_sheet = destSheets[ _j ];
-  		dest.deleteSheet( _sheet );
-  	}
+    this.forEachSheet(sourceId, regexSheetName, function(sheet, sheetName){
+        dest.deleteSheet(dest.getSheetByName(sheetName))
+        sheet.copyTo( dest ).setName(sheetName);
+    });
   };
+
+
 
 
   /**
@@ -343,7 +397,7 @@ UtilityClass=function(){
    *
    * @param   {string} text                        string to be interpolated
    * @param   {object} keyValue                    object with key values to subtitute on the string
-   * @param   {Regexp} [delimiter=/{{([^{}]*)}}/g] regexp that defines the delimiter, default is {{word}}
+   * @param   {RegExp} [delimiter=/{{([^{}]*)}}/g] regexp that defines the delimiter, default is {{word}}
    *
    * @returns {string} The interpolated string
    *
