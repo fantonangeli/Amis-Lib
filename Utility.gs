@@ -432,6 +432,74 @@ UtilityClass=function(){
   };
 
 
+  /**
+   * execute a callback for each named range in a spreadSheet
+   * @param  {object}   spreadSheet the spreadSheet
+   * @param  {Function} callback    callback to run. Taking 1 argument: the named range
+   * @return {void}
+   * @throws "InvalidArgument"
+   */
+  this.forEachNamedRange = function( spreadSheet, callback ) {
+  	var nRanges;
+
+  	spreadSheet = spreadSheet || SpreadSheetCache.getActiveSpreadsheet();
+
+  	if ( !spreadSheet ) {
+  		throw "InvalidArgument";
+  	}
+
+  	nRanges = spreadSheet.getNamedRanges();
+
+  	for ( var i = 0, nRanges_length = nRanges.length, e; i < nRanges_length; i++ ) {
+  		e = nRanges[ i ];
+  		callback( e );
+  	}
+  };
+
+  /**
+   * delete all namedRange in a spreadSheet
+   * @param  {object}   spreadSheet the spreadSheet
+   * @return {void}
+   * @throws "InvalidArgument"
+   */
+  this.deleteAllNamedRanges = function( spreadSheet ) {
+  	if ( !spreadSheet ) {
+  		throw "InvalidArgument";
+  	}
+
+  	this.forEachNamedRange( spreadSheet, function( r ) {
+  		r.remove();
+  	} );
+
+  };
+
+  /**
+   * copy all namedRange from a spreadSheet to another one
+   * @param  {object} dest   destination spreadSheet
+   * @param  {object} source source spreadSheet
+   * @return {void}
+   * @throws "InvalidArgument"
+   */
+  this.copyAllNamedRanges = function( dest, source ) {
+  	source = source || SpreadSheetCache.getActiveSpreadsheet();
+
+  	if ( !dest ) {
+  		throw "InvalidArgument";
+  	}
+
+  	this.forEachNamedRange( source, function( r ) {
+  		var rName, a1n, sheetName, destRange;
+  		rName = r.getName();
+  		sheetName = r.getRange().getSheet().getName();
+  		a1n = r.getRange().getA1Notation();
+  		destRange = dest.getRange( sheetName + "!" + a1n );
+
+  		dest.setNamedRange( rName, destRange );
+  	} );
+
+  };
+
+
 
 };
 
