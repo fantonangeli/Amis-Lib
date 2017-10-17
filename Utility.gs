@@ -1,4 +1,5 @@
-UtilityClass=function(){
+UtilityClass=function(devMode){
+    devMode=(devMode || false);
 
    /**
     * converts column number to column letter
@@ -254,6 +255,10 @@ UtilityClass=function(){
        	var ss = SpreadsheetApp.getActiveSpreadsheet();
        	var sheet = ss.getActiveSheet();
        	var activeRange = sheet.getActiveRange();
+
+        if (devMode) {
+            return;
+        }
 
         if (!errorEmail) {
             return;
