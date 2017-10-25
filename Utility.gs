@@ -1,4 +1,4 @@
-UtilityClass=function(devMode){
+UtilityClass=function(devMode, errorEmail){
     devMode=(devMode || false);
 
    /**
@@ -249,18 +249,15 @@ UtilityClass=function(devMode){
   /**
    * sends a debug email message
    * @param  {string} message debug info to send
-   * @param  {string} errorEmail email to send the error
+   * @param  {string} to (optional)email to send the error, if not defined errorEmail will taken
    */
-   this.sendErrorEmails = function( message, errorEmail ) {
+   this.sendErrorEmails = function( message, to ) {
+        to=(to || errorEmail);
        	var ss = SpreadsheetApp.getActiveSpreadsheet();
        	var sheet = ss.getActiveSheet();
        	var activeRange = sheet.getActiveRange();
 
-        if (devMode) {
-            return;
-        }
-
-        if (!errorEmail) {
+        if (devMode || !to) {
             return;
         }
 
@@ -275,7 +272,7 @@ UtilityClass=function(devMode){
        			"<b>Stacktrace</b>: " + ex.stack;
 
        		MailApp.sendEmail( {
-       			to: errorEmail,
+       			to: to,
        			subject: title,
        			htmlBody: body
        		});
