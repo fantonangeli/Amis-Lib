@@ -347,6 +347,42 @@ UtilityClass=function(devMode, errorEmail){
       	}
     };
 
+
+    /**
+     * execute a callback for each row in a sheet
+     * @param  {objecy}   sheet    the sheet
+     * @param  {Function} callback Function to execute for each element, taking 2 arguments: sheet, row number
+     * @return {void}
+     * @throws {InvalidArgument}
+     */
+    this.forEachRow=function(sheet, callback){
+        if (!sheet || !callback) {
+            throw "InvalidArgument";
+        }
+
+        for ( var i = 1, rows_length = sheet.getLastRow(); i <= rows_length; i++ ) {
+            callback(sheet, i);
+        }
+    };
+
+
+    /**
+     * execute a callback for each column in a sheet
+     * @param  {objecy}   sheet    the sheet
+     * @param  {Function} callback Function to execute for each element, taking 2 arguments: sheet, column number
+     * @return {void}
+     * @throws {InvalidArgument}
+     */
+    this.forEachColumn=function(sheet, callback){
+        if (!sheet || !callback) {
+            throw "InvalidArgument";
+        }
+
+        for ( var i = 1, cols_length = sheet.getLastColumn(); i <= cols_length; i++ ) {
+            callback(sheet, i);
+        }
+    };
+
     /**
      * delete all mathcing sheet
      * @return {void}
