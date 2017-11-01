@@ -537,6 +537,41 @@ UtilityClass=function(devMode, errorEmail){
 
   };
 
+    /**
+     * copy all spreadsheet values from a spreadsheet to another
+     * @param  {string} from            the spreadsheet id where values are
+     * @param  {string} to              the spreadsheet id where to write values
+     * @param  {RegExp} sheetNameFilter (optional) regex to choose what sheet copy
+     * @return {void}
+     * @throws "InvalidArgument"
+     * @throws "SheetNotFound" if the sheet in the destination spreadsheet is not found
+     */
+    this.copyAllSpreadSheetValues = function( from, to, sheetNameFilter ) {
+    	sheetNameFilter = ( sheetNameFilter || /.*/ );
+    	var toSpreadSheet;
+
+    	if ( !from || !to ) {
+    		throw "InvalidArgument";
+    	}
+
+    	toSpreadSheet = SpreadsheetApp.openById( to );
+
+    	Utility.forEachSheet( from, sheetNameFilter, function( fromSheet, sheetName ) {
+    		var toSheet, fromValues;
+
+    		toSheet = toSpreadSheet.getSheetByName( sheetName );
+
+    		if ( !toSheet ) {
+    			throw "SheetNotFound";
+    		}
+
+    		fromValues = fromSheet.getDataRange().getValues();
+
+    		//write the data to the destination
+    		toSheet.getDataRange().setValues( fromValues );
+    	} );
+    };
+
 
 
 };
