@@ -421,7 +421,7 @@ UtilityClass=function(devMode, errorEmail){
     }
 
     this.forEachSheet(sourceId, regexSheetName, function(sheet, sheetName){
-        dest.deleteSheet(dest.getSheetByName(sheetName))
+        dest.deleteSheet(dest.getSheetByName(sheetName));
         sheet.copyTo( dest ).setName(sheetName);
     });
   };
