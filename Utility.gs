@@ -572,7 +572,20 @@ UtilityClass=function(devMode, errorEmail){
     	} );
     };
 
-
+    /**
+     * Returns the position of the last column that has content.
+     * @param  {object|string} sheet (optional) the sheet object or name
+     * @return {number} the last column of the sheet that contains content
+     */
+    this.getLastColumn = function(sheet) {
+      if (!sheet) {
+        return SpreadSheetCache.getActiveSheetLastColumn();
+      } else if (typeof sheet === 'string') {
+        return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet).getLastColumn();
+      } else if (typeof sheet === 'object') {
+        return sheet.getLastColumn();
+      }
+    };
 
 };
 
