@@ -576,12 +576,20 @@ UtilityClass=function(devMode, errorEmail){
      * Returns the position of the last column that has content.
      * @param  {object|string} sheet (optional) the sheet object or name
      * @return {number} the last column of the sheet that contains content
+     * @throws {InvalidArgument}
+     * @throws {SheetNotFound}
      */
     this.getLastColumn = function(sheet) {
       if (!sheet) {
-        return SpreadSheetCache.getActiveSheetLastColumn();
+        throw "InvalidArgument";
       } else if (typeof sheet === 'string') {
-        return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet).getLastColumn();
+        sheet=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet);
+
+        if (!sheet) {
+            throw "SheetNotFound";
+        }
+
+        return sheet.getLastColumn();
       } else if (typeof sheet === 'object') {
         return sheet.getLastColumn();
       }
