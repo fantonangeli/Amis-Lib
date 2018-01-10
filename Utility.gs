@@ -574,7 +574,7 @@ UtilityClass=function(devMode, errorEmail){
 
     /**
      * Returns the position of the last column that has content.
-     * @param  {object|string} sheet (optional) the sheet object or name
+     * @param  {string} sheet (optional) the sheet name
      * @return {number} the last column of the sheet that contains content
      * @throws {InvalidArgument}
      * @throws {SheetNotFound}
@@ -589,8 +589,6 @@ UtilityClass=function(devMode, errorEmail){
             throw "SheetNotFound";
         }
 
-        return sheet.getLastColumn();
-      } else if (typeof sheet === 'object') {
         return sheet.getLastColumn();
       }
     };
