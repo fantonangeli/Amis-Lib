@@ -1,6 +1,80 @@
 UtilityClass = function( devMode, errorEmail ) {
    devMode = ( devMode || false );
 
+
+   /**
+    * Copies the data from a range of cells to another range calculated by offset. Both the values and formatting are copied. 
+    * It can be improved for better performance, without using GAS api
+    * @param  {object} sheet         the sheet
+    * @param  {string} from         the range to return, as specified in A1 notation or R1C1 notation
+    * @param  {number} rowOffset    (optional) number of rows down from the range's top-left cell; negative values represent rows up from the range's top-left cell
+    * @param  {number} columnOffset (optional) number of columns right from the range's top-left cell; negative values represent columns left from the range's top-left cell
+    * @return {object}              the new range
+    * @throws {InvalidArgument}
+    * @throws {InvalidOffset} If the offset exceed the range
+    */
+   this.A1Offset=function(sheet, a1Range, rowOffset, columnOffset){
+       rowOffset=(rowOffset || 0);
+       columnOffset=(columnOffset || 0);
+
+       if (!sheet || !a1Range) {
+           throw "InvalidArgument";
+       }
+
+
+       fromRange=sheet.getRange(a1Range);
+       try{
+           toRange=fromRange.offset(rowOffset, columnOffset);
+       } catch ( ex ) {
+           var e=ex;
+           throw "InvalidOffset";
+       }
+
+
+       return toRange.getA1Notation();
+   };
+
+   /**
+    * Copies the data from a range of cells to another range calculated by offset. Both the values and formatting are copied.
+    * @param  {object} sheet         the sheet
+    * @param  {string} from         the range to return, as specified in A1 notation or R1C1 notation
+    * @param  {number} rowOffset    number of rows down from the range's top-left cell; negative values represent rows up from the range's top-left cell    * @param  {number} columnOffset number of columns right from the range's top-left cell; negative values represent columns left from the range's top-left cell
+    * @return {object}              the new range
+    */
+   this.copyToOffset=function(sheet, from, rowOffset, columnOffset){
+
+       fromRange=sheet.getRange(from);
+       toRange=fromRange.offset(rowOffset, columnOffset);
+       fromRange.copyTo(toRange);
+
+       return toRange;
+   };
+
+
+   /**
+    * get the range with only the columns in A1Notation from another range
+    * @param  {string} range the range in A1Notation
+    * @return {string}       the new range in A1Notation
+    * @throws {InvalidArgument}
+    */
+   this.getRangeColumns=function(range){
+       var exRange;
+       if (!range) {
+           throw "InvalidArgument";
+       }
+
+       exRange=/^([A-Z]+)\d+:([A-Z]+)\d+$/.exec(range);
+
+		if(!exRange) {
+			throw "InvalidRange";
+		}
+
+        return exRange[1]+":"+exRange[2];
+
+   };
+
+
+
    /**
     * converts column number to column letter
     * @param  {number} number the number of the column (column A is 1)
