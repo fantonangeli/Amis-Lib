@@ -6,6 +6,51 @@
 APPCache=function(defaultExpirationInSeconds){
 	defaultExpirationInSeconds=(defaultExpirationInSeconds || 600);
 	var cache = CacheService.getUserCache();
+    this.keysListName = "_keysListName";
+
+    /**
+     * gets the list of the keys from the cache
+     *
+     * @returns {[string]} the keys list
+     */
+    this.getKeyList=function(){
+        var keylist;
+
+        keylist=this.get(this.keysListName);
+
+        return (keylist || []);
+    };
+
+    /**
+     * store a key in the keylist
+     *
+     * @param {string} key the key 
+     * @returns {void}
+     * @throws InvalidArgument
+     */
+    this.putKeyList=function(key) {
+        var kl;
+
+        if (!key) {
+            throw "InvalidArgument";
+        }
+
+        kl=this.getKeyList();
+
+        kl.push(key);
+
+        cache.put(this.keysListName, JSON.stringify(kl));
+    };
+
+
+    /**
+     * remove (empty) the keylist
+     *
+     * @returns {void}
+     */
+    this.removeKeyList=function() {
+        this.remove(this.keysListName);
+    };
 
 	/**
 	 * Adds a key/value pair to the cache. 
@@ -17,6 +62,8 @@ APPCache=function(defaultExpirationInSeconds){
 		expirationInSeconds=(expirationInSeconds || defaultExpirationInSeconds);
 		if((val===null) || (val===undefined))return null;
 		cache.put(key, JSON.stringify(val), expirationInSeconds);
+
+        this.putKeyList(key);
 	};
 
 	/**
@@ -25,6 +72,7 @@ APPCache=function(defaultExpirationInSeconds){
 	 * @return {object}     the object already parsed
 	 */
 	this.get= function(key) {
+        var val;
 		val=cache.get(key);
 		if((val===null) || (val===undefined))return null;
 		return JSON.parse(val);
@@ -37,4 +85,26 @@ APPCache=function(defaultExpirationInSeconds){
 	this.remove=function(key) {
 		cache.remove(key);
 	};
+
+
+
+    
+    /**
+     * remove all entries from the cache
+     *
+     * @returns {void}
+     */
+    this.removeAll=function(){
+        var keyList;
+
+        keyList=this.getKeyList();
+
+        cache.removeAll(keyList);
+
+        this.removeKeyList();
+        
+    };
+    
+
+    
 };
