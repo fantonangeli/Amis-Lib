@@ -3,11 +3,13 @@
  * @return {[type]} [description]
  */
 SpreadSheetCache = function() {
-  var activeSheet = null;
-  var activeRange = null;
-  var activeCell = null;
-  var activeSpreadSheet = null;
-  var activeSheetValues = null;
+  var activeSheet = null,
+    activeRange = null,
+    activeCell = null,
+    activeSpreadSheet = null,
+    activeSheetValues = null,
+    activeSheetName=null,
+    activeLastColumn=null;
 
 
 
@@ -61,5 +63,24 @@ SpreadSheetCache = function() {
     activeCell = activeCell || this.getActiveSheet().getActiveCell();
     return activeCell;
   };
+
+
+  /**
+   * Returns the name of the sheet
+   * @return {string} the name of the sheet
+   */
+  this.getActiveSheetName=function(){
+      return (activeSheetName = activeSheetName || this.getActiveSheet().getName());
+  };
+
+
+  /**
+   * Returns the position of the last column that has content.
+   * @return {number} the last column of the sheet that contains content
+   */
+  this.getActiveSheetLastColumn=function(){
+      return (activeLastColumn = activeLastColumn || this.getActiveSheetValues()[0].length);
+  };
+
 
 };
