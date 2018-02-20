@@ -5,7 +5,7 @@
  */
 APPCache=function(defaultExpirationInSeconds){
 	defaultExpirationInSeconds=(defaultExpirationInSeconds || 600);
-	var cache = CacheService.getUserCache();
+	var cache = CacheService.getDocumentCache();
     this.keysListName = "_keysListName";
 
     /**
